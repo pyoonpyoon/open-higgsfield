@@ -2,6 +2,8 @@
 
 **A virtual film set for any photo.** Drop in a subject, drag a camera anywhere around it in 3D, preview the move on a live monitor, then shoot it: a new angle with Qwen-Image-Edit and a cinematic camera move with LTX. All of it runs on open-weight models through the Comfy Developer Platform.
 
+**▶ Try it: [open-higgsfield-reshoot.vercel.app](https://open-higgsfield-reshoot.vercel.app)** (the public demo runs in dry-run mode: the full set, monitor and workflow compiler, with no GPU attached).
+
 Built for the [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield) challenge. It rebuilds Higgsfield's two headline apps, **Angles** (re-shoot a subject from any angle) and **Cinema Studio** (direct the camera like on a film set), as one open, inspectable app.
 
 | Source | Re-shot: front-left | Low angle, wide | High angle, close |
