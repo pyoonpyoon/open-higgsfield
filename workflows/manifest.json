@@ -1,0 +1,598 @@
+{
+  "angle": {
+    "file": "angle.api.json",
+    "inputs": {
+      "image": {
+        "node": "1",
+        "field": "image"
+      },
+      "prompt": {
+        "node": "10",
+        "field": "prompt"
+      },
+      "seed": {
+        "node": "15",
+        "field": "seed"
+      },
+      "steps": {
+        "node": "15",
+        "field": "steps"
+      },
+      "cfg": {
+        "node": "15",
+        "field": "cfg"
+      },
+      "angleLoraStrength": {
+        "node": "4",
+        "field": "strength_model"
+      },
+      "lightningStrength": {
+        "node": "7",
+        "field": "strength_model"
+      }
+    },
+    "outputs": {
+      "image": "17"
+    },
+    "defaults": {
+      "steps": 4,
+      "cfg": 1.0,
+      "angleLoraStrength": 1.0,
+      "lightningStrength": 1.0
+    },
+    "notes": "Lightning on: steps 4, cfg 1. Full quality: lightningStrength 0, steps 40, cfg 4. Prompt = angleGrammar.template.",
+    "models": [
+      {
+        "file": "qwen_image_edit_2511_bf16.safetensors",
+        "folder": "diffusion_models",
+        "url": "https://huggingface.co/Comfy-Org/Qwen-Image-Edit_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_edit_2511_bf16.safetensors",
+        "sizeGB": 40.86,
+        "license": "apache-2.0"
+      },
+      {
+        "file": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/fal/Qwen-Image-Edit-2511-Multiple-Angles-LoRA/resolve/main/qwen-image-edit-2511-multiple-angles-lora.safetensors",
+        "sizeGB": 0.3,
+        "license": "apache-2.0"
+      },
+      {
+        "file": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/lightx2v/Qwen-Image-Edit-2511-Lightning/resolve/main/Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+        "sizeGB": 0.85,
+        "license": "apache-2.0"
+      },
+      {
+        "file": "qwen_2.5_vl_7b.safetensors",
+        "folder": "text_encoders",
+        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/text_encoders/qwen_2.5_vl_7b.safetensors",
+        "sizeGB": 16.58,
+        "license": "apache-2.0"
+      },
+      {
+        "file": "qwen_image_vae.safetensors",
+        "folder": "vae",
+        "url": "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/vae/qwen_image_vae.safetensors",
+        "sizeGB": 0.25,
+        "license": "apache-2.0"
+      }
+    ],
+    "variants": {
+      "gguf": {
+        "file": "angle.gguf.api.json",
+        "note": "Same graph with a GGUF Q8_0 diffusion model (~22 GB instead of 41 GB). Use on Apple Silicon or GPUs under ~48 GB.",
+        "customNodes": [
+          {
+            "name": "ComfyUI-GGUF",
+            "url": "https://github.com/city96/ComfyUI-GGUF",
+            "license": "Apache-2.0"
+          }
+        ],
+        "replaces": "diffusion_models",
+        "models": [
+          {
+            "file": "qwen-image-edit-2511-Q8_0.gguf",
+            "folder": "diffusion_models",
+            "url": "https://huggingface.co/unsloth/Qwen-Image-Edit-2511-GGUF/resolve/main/qwen-image-edit-2511-Q8_0.gguf",
+            "sizeGB": 21.76,
+            "license": "Apache-2.0"
+          }
+        ]
+      }
+    }
+  },
+  "move": {
+    "file": "move.api.json",
+    "inputs": {
+      "image": {
+        "node": "1",
+        "field": "image"
+      },
+      "prompt": {
+        "node": "20",
+        "field": "text"
+      },
+      "negative": {
+        "node": "21",
+        "field": "text"
+      },
+      "seed": {
+        "node": "34",
+        "field": "noise_seed"
+      },
+      "cameraLora": {
+        "node": "11",
+        "field": "lora_name"
+      },
+      "cameraLoraStrength": {
+        "node": "11",
+        "field": "strength_model"
+      },
+      "frames": {
+        "node": "24",
+        "field": "value"
+      },
+      "width": {
+        "node": "2",
+        "field": "resize_type.width"
+      },
+      "height": {
+        "node": "2",
+        "field": "resize_type.height"
+      },
+      "fps": {
+        "node": "22",
+        "field": "value"
+      }
+    },
+    "outputs": {
+      "video": "53"
+    },
+    "defaults": {
+      "frames": 121,
+      "width": 1280,
+      "height": 720,
+      "fps": 25,
+      "cameraLoraStrength": 1.0
+    },
+    "notes": "LTX-2 19B (the only LTX with official camera-control LoRAs). frames must be 8n+1; width/height multiples of 64 (start image is center-cropped to it). Audio is generated jointly (LTX-2 is audio+video) and muxed into the mp4. For a cameraMoves entry with lora=null keep the default lora_name and set cameraLoraStrength=0.",
+    "models": [
+      {
+        "file": "ltx-2-19b-dev-fp8.safetensors",
+        "folder": "checkpoints",
+        "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-dev-fp8.safetensors",
+        "sizeGB": 27.08,
+        "license": "ltx-2-community-license"
+      },
+      {
+        "file": "ltx-2-19b-distilled-lora-384.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-19b-distilled-lora-384.safetensors",
+        "sizeGB": 7.67,
+        "license": "ltx-2-community-license"
+      },
+      {
+        "file": "ltx-2-spatial-upscaler-x2-1.0.safetensors",
+        "folder": "latent_upscale_models",
+        "url": "https://huggingface.co/Lightricks/LTX-2/resolve/main/ltx-2-spatial-upscaler-x2-1.0.safetensors",
+        "sizeGB": 1.0,
+        "license": "ltx-2-community-license"
+      },
+      {
+        "file": "gemma_3_12B_it_fp4_mixed.safetensors",
+        "folder": "text_encoders",
+        "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+        "sizeGB": 9.45,
+        "license": "gemma-terms-of-use"
+      },
+      {
+        "file": "ltx-2-19b-lora-camera-control-dolly-in.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/Lightricks/LTX-2-19b-LoRA-Camera-Control-Dolly-In/resolve/main/ltx-2-19b-lora-camera-control-dolly-in.safetensors",
+        "sizeGB": 0.33,
+        "license": "ltx-2-community-license"
+      },
+      {
+        "file": "ltx-2-19b-lora-camera-control-dolly-out.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/Lightricks/LTX-2-19b-LoRA-Camera-Control-Dolly-Out/resolve/main/ltx-2-19b-lora-camera-control-dolly-out.safetensors",
+        "sizeGB": 0.33,
+        "license": "ltx-2-community-license"
+      },
+      {
+        "file": "ltx-2-19b-lora-camera-control-dolly-left.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/Lightricks/LTX-2-19b-LoRA-Camera-Control-Dolly-Left/resolve/main/ltx-2-19b-lora-camera-control-dolly-left.safetensors",
+        "sizeGB": 0.33,
+        "license": "ltx-2-community-license"
+      },
+      {
+        "file": "ltx-2-19b-lora-camera-control-dolly-right.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/Lightricks/LTX-2-19b-LoRA-Camera-Control-Dolly-Right/resolve/main/ltx-2-19b-lora-camera-control-dolly-right.safetensors",
+        "sizeGB": 0.33,
+        "license": "ltx-2-community-license"
+      },
+      {
+        "file": "ltx-2-19b-lora-camera-control-jib-up.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/Lightricks/LTX-2-19b-LoRA-Camera-Control-Jib-Up/resolve/main/ltx-2-19b-lora-camera-control-jib-up.safetensors",
+        "sizeGB": 2.21,
+        "license": "ltx-2-community-license"
+      },
+      {
+        "file": "ltx-2-19b-lora-camera-control-jib-down.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/Lightricks/LTX-2-19b-LoRA-Camera-Control-Jib-Down/resolve/main/ltx-2-19b-lora-camera-control-jib-down.safetensors",
+        "sizeGB": 2.21,
+        "license": "ltx-2-community-license"
+      },
+      {
+        "file": "ltx-2-19b-lora-camera-control-static.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/Lightricks/LTX-2-19b-LoRA-Camera-Control-Static/resolve/main/ltx-2-19b-lora-camera-control-static.safetensors",
+        "sizeGB": 2.21,
+        "license": "ltx-2-community-license"
+      }
+    ]
+  },
+  "moveLtx25": {
+    "file": "move_ltx25.api.json",
+    "inputs": {
+      "image": {
+        "node": "1",
+        "field": "image"
+      },
+      "prompt": {
+        "node": "2",
+        "field": "text"
+      },
+      "negative": {
+        "node": "10",
+        "field": "text"
+      },
+      "seed": {
+        "node": "14",
+        "field": "noise_seed"
+      },
+      "duration": {
+        "node": "4",
+        "field": "value"
+      },
+      "width": {
+        "node": "9",
+        "field": "value"
+      },
+      "height": {
+        "node": "12",
+        "field": "value"
+      },
+      "fps": {
+        "node": "16",
+        "field": "value"
+      }
+    },
+    "outputs": {
+      "video": "43"
+    },
+    "defaults": {
+      "duration": 5,
+      "width": 1280,
+      "height": 720,
+      "fps": 24
+    },
+    "notes": "Optional higher-quality alternative on LTX-2.5 (newest open-weights LTX, distilled, 2-pass). No camera LoRAs exist for 2.5, so camera moves are prompt-only (use cameraMoves[].prompt). duration is seconds; frames = duration*fps+1. Weights are gated on HF.",
+    "models": [
+      {
+        "file": "ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors",
+        "folder": "diffusion_models",
+        "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/diffusion_models/ltx-2.5-22b-distilled-transformer-comfy-int8-convrot.safetensors",
+        "sizeGB": 21.5,
+        "license": "ltx-2.x-community-license (gated: accept on HF + HF_TOKEN)"
+      },
+      {
+        "file": "gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors",
+        "folder": "text_encoders",
+        "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/text_encoders/gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors",
+        "sizeGB": 15.37,
+        "license": "ltx-2.x-community-license (gated: accept on HF + HF_TOKEN)"
+      },
+      {
+        "file": "ltx-2.5-video-vae-bf16.safetensors",
+        "folder": "vae",
+        "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/vae/ltx-2.5-video-vae-bf16.safetensors",
+        "sizeGB": 1.47,
+        "license": "ltx-2.x-community-license (gated: accept on HF + HF_TOKEN)"
+      },
+      {
+        "file": "ltx-2.5-audio-vae-bf16.safetensors",
+        "folder": "vae",
+        "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/vae/ltx-2.5-audio-vae-bf16.safetensors",
+        "sizeGB": 0.36,
+        "license": "ltx-2.x-community-license (gated: accept on HF + HF_TOKEN)"
+      },
+      {
+        "file": "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors",
+        "folder": "latent_upscale_models",
+        "url": "https://huggingface.co/Lightricks/LTX-2.5/resolve/main/latent_upscale_models/ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors",
+        "sizeGB": 1.0,
+        "license": "ltx-2.x-community-license (gated: accept on HF + HF_TOKEN)"
+      }
+    ]
+  },
+  "reshoot": {
+    "file": "reshoot.api.json",
+    "inputs": {
+      "video": {
+        "node": "1",
+        "field": "file"
+      },
+      "prompt": {
+        "node": "20",
+        "field": "text"
+      },
+      "negative": {
+        "node": "21",
+        "field": "text"
+      },
+      "seed": {
+        "node": "34",
+        "field": "seed"
+      },
+      "startTime": {
+        "node": "2",
+        "field": "start_time"
+      },
+      "duration": {
+        "node": "2",
+        "field": "duration"
+      },
+      "width": {
+        "node": "4",
+        "field": "resize_type.width"
+      },
+      "height": {
+        "node": "4",
+        "field": "resize_type.height"
+      },
+      "crossviewStrength": {
+        "node": "11",
+        "field": "strength_model"
+      }
+    },
+    "outputs": {
+      "video": "39"
+    },
+    "defaults": {
+      "duration": 5,
+      "width": 960,
+      "height": 544,
+      "crossviewStrength": 1.3
+    },
+    "notes": "Stretch: re-shoots an existing clip from a new viewpoint with the community CrossView-Prompt IC-LoRA (v0.9 proof-of-concept) on LTX-2.3. Keeps the source audio. Prompt = reshootGrammar.template. Small angle changes work best; chain for bigger moves.",
+    "models": [
+      {
+        "file": "ltx-2.3-22b-distilled-fp8.safetensors",
+        "folder": "checkpoints",
+        "url": "https://huggingface.co/Lightricks/LTX-2.3-fp8/resolve/main/ltx-2.3-22b-distilled-fp8.safetensors",
+        "sizeGB": 29.53,
+        "license": "ltx-2-community-license"
+      },
+      {
+        "file": "gemma_3_12B_it_fp4_mixed.safetensors",
+        "folder": "text_encoders",
+        "url": "https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/text_encoders/gemma_3_12B_it_fp4_mixed.safetensors",
+        "sizeGB": 9.45,
+        "license": "gemma-terms-of-use"
+      },
+      {
+        "file": "LTX2.3-22B_IC-LoRA-CrossView-Prompt_v0.9_13700.safetensors",
+        "folder": "loras",
+        "url": "https://huggingface.co/Cseti/LTX2.3-22B_IC-LoRA-CrossView-Prompt/resolve/main/LTX2.3-22B_IC-LoRA-CrossView-Prompt_v0.9_13700.safetensors",
+        "sizeGB": 0.1,
+        "license": "apache-2.0"
+      }
+    ]
+  },
+  "angleGrammar": {
+    "azimuths": [
+      {
+        "id": "front",
+        "deg": 0,
+        "token": "front view"
+      },
+      {
+        "id": "front-right",
+        "deg": 45,
+        "token": "front-right quarter view"
+      },
+      {
+        "id": "right",
+        "deg": 90,
+        "token": "right side view"
+      },
+      {
+        "id": "back-right",
+        "deg": 135,
+        "token": "back-right quarter view"
+      },
+      {
+        "id": "back",
+        "deg": 180,
+        "token": "back view"
+      },
+      {
+        "id": "back-left",
+        "deg": 225,
+        "token": "back-left quarter view"
+      },
+      {
+        "id": "left",
+        "deg": 270,
+        "token": "left side view"
+      },
+      {
+        "id": "front-left",
+        "deg": 315,
+        "token": "front-left quarter view"
+      }
+    ],
+    "elevations": [
+      {
+        "id": "low",
+        "deg": -30,
+        "token": "low-angle shot"
+      },
+      {
+        "id": "eye",
+        "deg": 0,
+        "token": "eye-level shot"
+      },
+      {
+        "id": "elevated",
+        "deg": 30,
+        "token": "elevated shot"
+      },
+      {
+        "id": "high",
+        "deg": 60,
+        "token": "high-angle shot"
+      }
+    ],
+    "distances": [
+      {
+        "id": "close",
+        "scale": 0.6,
+        "token": "close-up"
+      },
+      {
+        "id": "medium",
+        "scale": 1.0,
+        "token": "medium shot"
+      },
+      {
+        "id": "wide",
+        "scale": 1.8,
+        "token": "wide shot"
+      }
+    ],
+    "template": "<sks> {azimuth} {elevation} {distance}",
+    "example": "<sks> front-right quarter view eye-level shot medium shot",
+    "snap": "Snap continuous rig values to the nearest token: azimuth sector = round(deg/45) mod 8 (deg clockwise from front, subject's right = 90); elevation buckets <-15 low, <15 eye, <45 elevated, else high (same as core CameraAngle node); distance by scale."
+  },
+  "reshootGrammar": {
+    "azimuths": [
+      "far to the left",
+      "to the left",
+      "slightly to the left",
+      "same angle",
+      "slightly to the right",
+      "to the right",
+      "far to the right"
+    ],
+    "elevations": [
+      "lower",
+      "same height",
+      "higher"
+    ],
+    "distances": [
+      "closer",
+      "same distance",
+      "further"
+    ],
+    "template": "crossview. new camera angle: {azimuth}, {elevation}, {distance}."
+  },
+  "cameraMoves": [
+    {
+      "id": "static",
+      "label": "Static",
+      "lora": "ltx-2-19b-lora-camera-control-static.safetensors",
+      "prompt": "The camera is locked off on a tripod and does not move."
+    },
+    {
+      "id": "dolly-in",
+      "label": "Dolly In",
+      "lora": "ltx-2-19b-lora-camera-control-dolly-in.safetensors",
+      "prompt": "The camera dollies in toward the subject, ending on a close-up."
+    },
+    {
+      "id": "dolly-out",
+      "label": "Dolly Out",
+      "lora": "ltx-2-19b-lora-camera-control-dolly-out.safetensors",
+      "prompt": "The camera dollies back away from the subject, ending on a wide shot that reveals the surroundings."
+    },
+    {
+      "id": "dolly-zoom",
+      "label": "Dolly Zoom",
+      "lora": null,
+      "prompt": "Vertigo dolly zoom: the camera pushes in while the lens zooms out, the subject stays the same size as the background warps."
+    },
+    {
+      "id": "dolly-left",
+      "label": "Truck Left",
+      "lora": "ltx-2-19b-lora-camera-control-dolly-left.safetensors",
+      "prompt": "The camera tracks sideways to the left, ending with the subject on the right of frame."
+    },
+    {
+      "id": "dolly-right",
+      "label": "Truck Right",
+      "lora": "ltx-2-19b-lora-camera-control-dolly-right.safetensors",
+      "prompt": "The camera tracks sideways to the right, ending with the subject on the left of frame."
+    },
+    {
+      "id": "jib-up",
+      "label": "Jib Up",
+      "lora": "ltx-2-19b-lora-camera-control-jib-up.safetensors",
+      "prompt": "The camera cranes up, rising above the subject and ending on a high-angle view."
+    },
+    {
+      "id": "jib-down",
+      "label": "Jib Down",
+      "lora": "ltx-2-19b-lora-camera-control-jib-down.safetensors",
+      "prompt": "The camera cranes down, descending to end at a low angle looking up at the subject."
+    },
+    {
+      "id": "orbit-left",
+      "label": "Orbit Left",
+      "lora": null,
+      "prompt": "The camera orbits around the subject to the left in a smooth arc, ending on the subject's profile."
+    },
+    {
+      "id": "orbit-right",
+      "label": "Orbit Right",
+      "lora": null,
+      "prompt": "The camera orbits around the subject to the right in a smooth arc, ending on the subject's profile."
+    },
+    {
+      "id": "pan-left",
+      "label": "Pan Left",
+      "lora": null,
+      "prompt": "The camera pans left from a fixed position."
+    },
+    {
+      "id": "pan-right",
+      "label": "Pan Right",
+      "lora": null,
+      "prompt": "The camera pans right from a fixed position."
+    },
+    {
+      "id": "tilt-up",
+      "label": "Tilt Up",
+      "lora": null,
+      "prompt": "The camera tilts up from a fixed position, revealing what is above."
+    },
+    {
+      "id": "tilt-down",
+      "label": "Tilt Down",
+      "lora": null,
+      "prompt": "The camera tilts down from a fixed position."
+    },
+    {
+      "id": "handheld",
+      "label": "Handheld",
+      "lora": null,
+      "prompt": "Handheld camera with subtle natural shake, following the subject."
+    }
+  ]
+}

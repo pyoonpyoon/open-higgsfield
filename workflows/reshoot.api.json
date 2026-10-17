@@ -1,0 +1,352 @@
+{
+  "1": {
+    "class_type": "LoadVideo",
+    "_meta": {
+      "title": "Reference clip to re-shoot"
+    },
+    "inputs": {
+      "file": "input.mp4"
+    }
+  },
+  "2": {
+    "class_type": "Video Slice",
+    "_meta": {
+      "title": "Clip length (seconds)"
+    },
+    "inputs": {
+      "start_time": 0.0,
+      "duration": 5.0,
+      "strict_duration": false,
+      "video": [
+        "1",
+        0
+      ]
+    }
+  },
+  "3": {
+    "class_type": "GetVideoComponents",
+    "inputs": {
+      "video": [
+        "2",
+        0
+      ]
+    }
+  },
+  "4": {
+    "class_type": "ResizeImageMaskNode",
+    "_meta": {
+      "title": "Output size (center-crop)"
+    },
+    "inputs": {
+      "resize_type": "scale dimensions",
+      "resize_type.width": 960,
+      "resize_type.height": 544,
+      "resize_type.crop": "center",
+      "scale_method": "lanczos",
+      "input": [
+        "3",
+        0
+      ]
+    }
+  },
+  "5": {
+    "class_type": "GetImageSize",
+    "inputs": {
+      "image": [
+        "4",
+        0
+      ]
+    }
+  },
+  "6": {
+    "class_type": "ComfyMathExpression",
+    "_meta": {
+      "title": "Source FPS as int"
+    },
+    "inputs": {
+      "expression": "a",
+      "values.a": [
+        "3",
+        2
+      ]
+    }
+  },
+  "10": {
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "LTX-2.3 22B distilled (fp8)"
+    },
+    "inputs": {
+      "ckpt_name": "ltx-2.3-22b-distilled-fp8.safetensors"
+    }
+  },
+  "11": {
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "CrossView-Prompt IC-LoRA"
+    },
+    "inputs": {
+      "lora_name": "LTX2.3-22B_IC-LoRA-CrossView-Prompt_v0.9_13700.safetensors",
+      "strength_model": 1.3,
+      "model": [
+        "10",
+        0
+      ]
+    }
+  },
+  "12": {
+    "class_type": "GetICLoRAParameters",
+    "inputs": {
+      "iclora_model": [
+        "11",
+        0
+      ]
+    }
+  },
+  "13": {
+    "class_type": "LTXAVTextEncoderLoader",
+    "inputs": {
+      "text_encoder": "gemma_3_12B_it_fp4_mixed.safetensors",
+      "ckpt_name": "ltx-2.3-22b-distilled-fp8.safetensors",
+      "device": "default"
+    }
+  },
+  "14": {
+    "class_type": "LTXVAudioVAELoader",
+    "inputs": {
+      "ckpt_name": "ltx-2.3-22b-distilled-fp8.safetensors"
+    }
+  },
+  "20": {
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "crossview. new camera angle: {azimuth}, {elevation}, {distance}."
+    },
+    "inputs": {
+      "text": "crossview. new camera angle: to the right, same height, same distance.",
+      "clip": [
+        "13",
+        0
+      ]
+    }
+  },
+  "21": {
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Negative"
+    },
+    "inputs": {
+      "text": "blurry, out of focus, low quality, flickering, distorted proportions, deformed, watermark, subtitles, text",
+      "clip": [
+        "13",
+        0
+      ]
+    }
+  },
+  "22": {
+    "class_type": "LTXVConditioning",
+    "inputs": {
+      "frame_rate": [
+        "3",
+        2
+      ],
+      "positive": [
+        "20",
+        0
+      ],
+      "negative": [
+        "21",
+        0
+      ]
+    }
+  },
+  "30": {
+    "class_type": "EmptyLTXVLatentVideo",
+    "inputs": {
+      "width": [
+        "5",
+        0
+      ],
+      "height": [
+        "5",
+        1
+      ],
+      "length": [
+        "5",
+        2
+      ],
+      "batch_size": 1
+    }
+  },
+  "31": {
+    "class_type": "LTXVAddGuide",
+    "_meta": {
+      "title": "IC-LoRA reference = the original clip"
+    },
+    "inputs": {
+      "frame_idx": 0,
+      "strength": 1.0,
+      "positive": [
+        "22",
+        0
+      ],
+      "negative": [
+        "22",
+        1
+      ],
+      "vae": [
+        "10",
+        2
+      ],
+      "latent": [
+        "30",
+        0
+      ],
+      "image": [
+        "4",
+        0
+      ],
+      "iclora_parameters": [
+        "12",
+        0
+      ]
+    }
+  },
+  "32": {
+    "class_type": "LTXVEmptyLatentAudio",
+    "inputs": {
+      "frames_number": [
+        "5",
+        2
+      ],
+      "frame_rate": [
+        "6",
+        1
+      ],
+      "batch_size": 1,
+      "audio_vae": [
+        "14",
+        0
+      ]
+    }
+  },
+  "33": {
+    "class_type": "LTXVConcatAVLatent",
+    "inputs": {
+      "video_latent": [
+        "31",
+        2
+      ],
+      "audio_latent": [
+        "32",
+        0
+      ]
+    }
+  },
+  "34": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 0,
+      "steps": 8,
+      "cfg": 1.0,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "linear_quadratic",
+      "denoise": 1.0,
+      "model": [
+        "11",
+        0
+      ],
+      "positive": [
+        "31",
+        0
+      ],
+      "negative": [
+        "31",
+        1
+      ],
+      "latent_image": [
+        "33",
+        0
+      ]
+    }
+  },
+  "35": {
+    "class_type": "LTXVSeparateAVLatent",
+    "inputs": {
+      "av_latent": [
+        "34",
+        0
+      ]
+    }
+  },
+  "36": {
+    "class_type": "LTXVCropGuides",
+    "inputs": {
+      "positive": [
+        "31",
+        0
+      ],
+      "negative": [
+        "31",
+        1
+      ],
+      "latent": [
+        "35",
+        0
+      ]
+    }
+  },
+  "37": {
+    "class_type": "VAEDecodeTiled",
+    "inputs": {
+      "tile_size": 768,
+      "overlap": 64,
+      "temporal_size": 4096,
+      "temporal_overlap": 64,
+      "samples": [
+        "36",
+        2
+      ],
+      "vae": [
+        "10",
+        2
+      ]
+    }
+  },
+  "38": {
+    "class_type": "CreateVideo",
+    "_meta": {
+      "title": "New angle + original audio"
+    },
+    "inputs": {
+      "fps": [
+        "3",
+        2
+      ],
+      "bit_depth": "auto",
+      "color_space": "sRGB",
+      "codec": "none",
+      "images": [
+        "37",
+        0
+      ],
+      "audio": [
+        "3",
+        1
+      ]
+    }
+  },
+  "39": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "filename_prefix": "openhiggs/reshoot",
+      "format": "mp4",
+      "format.codec": "h264",
+      "video": [
+        "38",
+        0
+      ],
+      "format.codec.encoding": "auto"
+    }
+  }
+}

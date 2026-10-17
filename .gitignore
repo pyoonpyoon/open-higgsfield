@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.vercel/
+.env*
+.DS_Store
+web/src/workflows/
+# local agent notes and planning
+.claude/
+tasks/

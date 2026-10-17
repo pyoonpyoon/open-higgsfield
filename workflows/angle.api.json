@@ -1,0 +1,222 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Source image"
+    },
+    "inputs": {
+      "image": "input.png"
+    }
+  },
+  "2": {
+    "class_type": "FluxKontextImageScale",
+    "_meta": {
+      "title": "Scale to Qwen-friendly size"
+    },
+    "inputs": {
+      "image": [
+        "1",
+        0
+      ]
+    }
+  },
+  "3": {
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Qwen-Image-Edit-2511"
+    },
+    "inputs": {
+      "unet_name": "qwen_image_edit_2511_bf16.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "4": {
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Multiple-Angles LoRA"
+    },
+    "inputs": {
+      "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "strength_model": 1.0,
+      "model": [
+        "3",
+        0
+      ]
+    }
+  },
+  "5": {
+    "class_type": "ModelSamplingAuraFlow",
+    "inputs": {
+      "shift": 3.1,
+      "model": [
+        "4",
+        0
+      ],
+      "sampling": "flow"
+    }
+  },
+  "6": {
+    "class_type": "CFGNorm",
+    "inputs": {
+      "strength": 1.0,
+      "pre_cfg": false,
+      "model": [
+        "5",
+        0
+      ]
+    }
+  },
+  "7": {
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Lightning 4-step LoRA (strength 0 + 40 steps + cfg 4 = full quality)"
+    },
+    "inputs": {
+      "lora_name": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "strength_model": 1.0,
+      "model": [
+        "6",
+        0
+      ]
+    }
+  },
+  "8": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen_2.5_vl_7b.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    }
+  },
+  "9": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "qwen_image_vae.safetensors"
+    }
+  },
+  "10": {
+    "class_type": "TextEncodeQwenImageEditPlus",
+    "_meta": {
+      "title": "Camera prompt (<sks> azimuth elevation distance)"
+    },
+    "inputs": {
+      "prompt": "<sks> front-right quarter view eye-level shot medium shot",
+      "clip": [
+        "8",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ],
+      "image1": [
+        "2",
+        0
+      ]
+    }
+  },
+  "11": {
+    "class_type": "TextEncodeQwenImageEditPlus",
+    "_meta": {
+      "title": "Negative (empty)"
+    },
+    "inputs": {
+      "prompt": "",
+      "clip": [
+        "8",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ],
+      "image1": [
+        "2",
+        0
+      ]
+    }
+  },
+  "12": {
+    "class_type": "FluxKontextMultiReferenceLatentMethod",
+    "inputs": {
+      "reference_latents_method": "index_timestep_zero",
+      "conditioning": [
+        "10",
+        0
+      ]
+    }
+  },
+  "13": {
+    "class_type": "FluxKontextMultiReferenceLatentMethod",
+    "inputs": {
+      "reference_latents_method": "index_timestep_zero",
+      "conditioning": [
+        "11",
+        0
+      ]
+    }
+  },
+  "14": {
+    "class_type": "VAEEncode",
+    "inputs": {
+      "pixels": [
+        "2",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ]
+    }
+  },
+  "15": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 42,
+      "steps": 4,
+      "cfg": 1.0,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1.0,
+      "model": [
+        "7",
+        0
+      ],
+      "positive": [
+        "12",
+        0
+      ],
+      "negative": [
+        "13",
+        0
+      ],
+      "latent_image": [
+        "14",
+        0
+      ]
+    }
+  },
+  "16": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "15",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ]
+    }
+  },
+  "17": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "openhiggs/angle",
+      "images": [
+        "16",
+        0
+      ]
+    }
+  }
+}

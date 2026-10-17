@@ -1,0 +1,117 @@
+{
+  "_meta": {
+    "source": "Labels observed on public, unauthenticated higgsfield.ai pages on 2026-10-16 via REA capture-browser-scenario (see higgsfield-feature-map.md for evidence IDs). Labels only; no prompts, media or code. Categories are our own grouping.",
+    "product_versions": ["Cinema Studio 4.0 (default)", "Cinema Studio 3.5", "Cinema Studio 3.0", "Cinema Studio 2.5", "Angles 2.0"]
+  },
+  "cameraMoves": [
+    {"id": "static_shot", "label": "Static shot", "category": "static"},
+    {"id": "rack_focus", "label": "Rack focus", "category": "focus"},
+    {"id": "dolly_in", "label": "Dolly in", "category": "dolly"},
+    {"id": "dolly_out", "label": "Dolly out", "category": "dolly"},
+    {"id": "dolly_zoom", "label": "Dolly zoom", "category": "dolly"},
+    {"id": "slow_zoom_in", "label": "Slow zoom in", "category": "zoom"},
+    {"id": "slow_zoom_out", "label": "Slow zoom out", "category": "zoom"},
+    {"id": "crash_zoom", "label": "Crush zoom", "category": "zoom"},
+    {"id": "pan_left", "label": "Pan left", "category": "pan_tilt"},
+    {"id": "pan_right", "label": "Pan right", "category": "pan_tilt"},
+    {"id": "tilt_up", "label": "Tilt up", "category": "pan_tilt"},
+    {"id": "tilt_down", "label": "Tilt down", "category": "pan_tilt"},
+    {"id": "whip_pan", "label": "Whip pan", "category": "pan_tilt"},
+    {"id": "truck_left", "label": "Truck left", "category": "lateral"},
+    {"id": "truck_right", "label": "Truck right", "category": "lateral"},
+    {"id": "slider_left", "label": "Slider left", "category": "lateral"},
+    {"id": "slider_right", "label": "Slider right", "category": "lateral"},
+    {"id": "side_tracking", "label": "Side tracking", "category": "tracking"},
+    {"id": "tracking", "label": "Tracking", "category": "tracking"},
+    {"id": "crane_up", "label": "Crane up", "category": "vertical"},
+    {"id": "crane_down", "label": "Crane down", "category": "vertical"},
+    {"id": "pedestal_up", "label": "Pedestal up", "category": "vertical"},
+    {"id": "pedestal_down", "label": "Pedestal down", "category": "vertical"},
+    {"id": "robot_arm", "label": "Robot arm", "category": "vertical"},
+    {"id": "arc_left", "label": "Arc left", "category": "orbit"},
+    {"id": "arc_right", "label": "Arc right", "category": "orbit"},
+    {"id": "drone_orbit", "label": "Drone orbit", "category": "orbit"},
+    {"id": "bullet_time", "label": "Bullet time", "category": "orbit"},
+    {"id": "helicopter_shot", "label": "Helicopter shot", "category": "aerial"},
+    {"id": "aerial_pullback", "label": "Aerial pullback", "category": "aerial"},
+    {"id": "handheld", "label": "Handheld", "category": "body_rig"},
+    {"id": "snorricam", "label": "Snorricam", "category": "body_rig"},
+    {"id": "pov", "label": "POV", "category": "body_rig"}
+  ],
+  "cameraMoveSort": ["Default", "Name (A–Z)"],
+  "lenses": [
+    {"id": "auto", "label": "Auto"},
+    {"id": "clean_sharp", "label": "Clean Sharp"},
+    {"id": "anamorphic", "label": "Anamorphic"},
+    {"id": "vintage_anamorphic", "label": "Vintage Anamorphic"},
+    {"id": "warm_vintage", "label": "Warm Vintage"},
+    {"id": "halation_vintage", "label": "Halation Vintage"}
+  ],
+  "cameraBodies": [
+    {"id": "auto", "label": "Auto"},
+    {"id": "modern", "label": "Modern"},
+    {"id": "film_35mm", "label": "35mm Film"},
+    {"id": "film_8mm", "label": "8mm Film"},
+    {"id": "dv_camcorder", "label": "DV Camcorder"}
+  ],
+  "apertures": [
+    {"id": "auto", "label": "Auto"},
+    {"id": "f1_4", "label": "f/1.4 Wide Open"},
+    {"id": "f4", "label": "f/4 Moderate"},
+    {"id": "f11", "label": "f/11 Deep Focus"}
+  ],
+  "legacy_3_5_optics_unverified": {
+    "_note": "Cinema Studio 3.5 per third-party guides (vidpros.com, seedance.tv); NOT observed directly by us. Low confidence.",
+    "focalLengthsMm": [8, 14, 35, 50, 75],
+    "cameraBodies": ["RED V-Raptor", "Sony Venice", "ARRI Alexa", "IMAX", "Panavision DXL2"],
+    "lensCount": 11
+  },
+  "grades": {
+    "_note": "Cinema Studio 4.0 'Color palette' is a library of named looks (>=50 loaded on scroll) plus 'New palette' (user-created) and Auto. We do not copy their creative names; we define our own. Count and UX only.",
+    "observedCount": 50,
+    "userCreatable": true,
+    "ours": [
+      {"id": "auto", "label": "Auto"},
+      {"id": "teal_orange", "label": "Teal & Orange"},
+      {"id": "bleach_bypass", "label": "Bleach Bypass"},
+      {"id": "noir_bw", "label": "Noir B&W"},
+      {"id": "warm_film", "label": "Warm Film"},
+      {"id": "cool_night", "label": "Cool Night"},
+      {"id": "neon", "label": "Neon"},
+      {"id": "pastel", "label": "Pastel"},
+      {"id": "desaturated", "label": "Desaturated"}
+    ],
+    "cs25PostGradeControls": ["Color Temperature", "Contrast", "Saturation", "Sharpness", "Film Grain", "Highlights", "Exposure"]
+  },
+  "lighting": {
+    "presets": ["Auto", "Silhouette", "Practicals", "Window", "Overhead fall", "Contre jour", "Soft cross"],
+    "customLight": {"direction": "globe drag, pitch -90..90, azimuth -180..180, snapped to 45 deg (26 named directions e.g. front, back-top-left)", "brightness": [0, 100, 50], "diffuse": [0, 100, 50], "color": "hex, default #FFFFFF", "quality": ["soft", "hard"]},
+    "relightQuickSelect": ["Top", "Front", "Right", "Left", "Back", "Bottom"]
+  },
+  "filmSetup": {
+    "genre": ["Auto", "Epic", "Drama", "Noir", "Comedy", "Horror", "Action"],
+    "era": ["Auto", "1960s", "1980s", "1990s", "2000s", "2020s"],
+    "tempo": ["Auto", "Single shot", "Calm", "Dynamic", "Chaotic"]
+  },
+  "speedRamps_cs30": ["Auto", "Linear", "Flash In", "Flash Out", "Slow-mo", "Bullet Time", "Impact", "Ramp Up"],
+  "angles": {
+    "app": "Angles 2.0",
+    "rotationDeg": {"min": 0, "max": 315, "step": 45, "values": [0, 45, 90, 135, 180, 225, 270, 315]},
+    "tiltDeg": {"min": -30, "max": 60, "step": 30, "values": [-30, 0, 30, 60]},
+    "zoom": {"min": 0, "max": 10, "step": 5, "values": [0, 5, 10]},
+    "totalPoses": 96,
+    "batchMode": "Generate from 12 best angles",
+    "inputs": ["single image upload", "drag 3D camera gizmo", "3 sliders", "4 icon nudge buttons (inferred)"],
+    "shotsApp": {"outputs": 9, "flow": ["Upload", "Grid", "Upscale"], "upscaleTo": "4K"}
+  },
+  "aspectRatios": ["1:1", "3:4", "9:16", "4:3", "16:9", "21:9"],
+  "aspectRatios_cs3x": ["Auto"],
+  "resolutions": ["480p", "720p", "1080p"],
+  "imageResolutions": ["2k"],
+  "durations": {
+    "cs40": {"minS": 4, "maxS": 30, "defaultS": 5, "control": "slider"},
+    "cs35_cs30": {"defaultS": 8},
+    "cs25": {"defaultS": 4, "control": "slider"}
+  },
+  "batch": {"min": 1, "max": 4}
+}
