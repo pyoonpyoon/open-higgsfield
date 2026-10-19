@@ -1,23 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Big_Shoulders, Hanken_Grotesk, Spline_Sans_Mono } from "next/font/google";
+import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const display = Big_Shoulders({ variable: "--font-display", subsets: ["latin"], weight: ["600", "800"] });
-const sans = Hanken_Grotesk({ variable: "--font-body", subsets: ["latin"] });
-const mono = Spline_Sans_Mono({ variable: "--font-readout", subsets: ["latin"] });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+const plexMono = IBM_Plex_Mono({ variable: "--font-plex-mono", subsets: ["latin"], weight: ["400", "500", "600"] });
+const grotesk = Space_Grotesk({ variable: "--font-grotesk", subsets: ["latin"], weight: ["500", "700"] });
 
 export const metadata: Metadata = {
-  title: "Open Higgsfield — Reshoot",
+  title: "Open Higgsfield — Cinema Studio & Angles",
   description:
-    "Put a virtual camera anywhere around your subject, preview the move, and shoot it. Open-weights models on ComfyUI.",
+    "Re-shoot any photo from any angle and add cinematic camera moves. Open-weight models on ComfyUI.",
 };
 
-export const viewport: Viewport = { themeColor: "#0c0d0e", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#131416", colorScheme: "dark" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}>
-      <body className="min-h-full">{children}</body>
+    <html lang="en" className={`${inter.variable} ${plexMono.variable} ${grotesk.variable} h-full`}>
+      <body className="h-full">{children}</body>
     </html>
   );
 }

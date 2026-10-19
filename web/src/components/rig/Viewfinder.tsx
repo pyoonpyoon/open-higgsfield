@@ -66,31 +66,19 @@ export function Viewfinder(props: Props) {
   );
 
   return (
-    <div className="relative mx-auto w-full overflow-hidden rounded-[3px] border border-line-2 bg-black" style={{ aspectRatio: props.aspect }}>
+    <div className="relative w-full overflow-hidden rounded-[12px] bg-black" style={{ aspectRatio: props.aspect }}>
       <div className="absolute inset-0" style={{ filter: props.gradeCss === "none" ? undefined : props.gradeCss }}>
         <Canvas camera={{ fov: props.fov, near: 0.05, far: 60 }} dpr={[1, 2]} aria-hidden>
           <Scene imageUrl={props.imageUrl} />
           <ShotCamera {...props} onTime={onTime} />
         </Canvas>
       </div>
-      {/* Framelines and readouts, like a monitor's overlay. */}
-      <div className="pointer-events-none absolute inset-[6%] border border-white/25" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2">
-        <div className="absolute left-1/2 top-0 h-full w-px bg-white/40" />
-        <div className="absolute left-0 top-1/2 h-px w-full bg-white/40" />
+      <div className="pointer-events-none absolute left-2 top-2 flex items-center gap-1.5 rounded-[6px] bg-black/55 px-1.5 py-0.5 font-mono text-[10px] text-white/85 backdrop-blur">
+        <span className={`h-1.5 w-1.5 rounded-full ${props.playing ? "bg-lime" : "bg-white/40"}`} />
+        Preview
       </div>
-      <div className="pointer-events-none absolute left-3 top-2 flex items-center gap-2 readout text-[11px] text-white/85">
-        <span className={`inline-block h-2 w-2 rounded-full bg-tally ${props.playing ? "rec-blink" : "opacity-40"}`} />
-        {props.playing ? "PREVIEW" : "STBY"}
-      </div>
-      <div className="pointer-events-none absolute right-3 top-2 readout text-[11px] text-white/85">
+      <div className="pointer-events-none absolute right-2 top-2 rounded-[6px] bg-black/55 px-1.5 py-0.5 font-mono text-[10px] text-white/85 backdrop-blur">
         <span ref={tc}>00:00:00:00</span>
-      </div>
-      <div className="pointer-events-none absolute bottom-2 left-3 right-3 flex justify-between readout text-[11px] text-white/70">
-        <span>{Math.round(props.fov)}° FOV</span>
-        <span>
-          AZ {Math.round(props.az)}° · EL {Math.round(props.el)}°
-        </span>
       </div>
     </div>
   );

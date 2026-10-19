@@ -14,13 +14,15 @@ Built for the [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield) 
 
 ## What it does
 
+Two apps in one Higgsfield-style studio (same layout language: sidebar app switcher, setting cards, lime Generate):
+
 | | |
 |---|---|
-| **The set** | A 3D stage with your subject standing in it. Drag the amber camera around (360° azimuth, low to overhead) or click any of the 96 marks the angle model was trained on. Snaps to the nearest pose on release. |
-| **The monitor** | A live viewfinder showing what that camera sees, with the lens, aspect frame lines and colour grade applied. The chosen camera move plays on a loop (including a true FOV-compensated dolly zoom), so you can block the shot before spending a GPU-second. |
-| **Director's panel** | 15 camera moves (7 driven by official LTX camera-control LoRAs), 6 lenses, 8 colour grades, aspect, duration and an action line. |
-| **Outputs** | **Still** (new angle), **Shot** (new angle, then video move) or **Coverage** (one click shoots a pack of angles: dialogue coverage, hero product, 360° turnaround or the best 12). |
-| **Dry run** | No GPU? Rolling compiles the *exact* ComfyUI workflow for that shot so you can download it and run it in ComfyUI yourself. Nothing is hidden. |
+| **Cinema Studio** (`/`) | A floating composer with setting cards: **Subject**, **Camera angle**, **Lens**, **Camera movement** and **Color palette**. Each opens a picker. The camera-angle picker is a drag-to-orbit globe with a live preview, and the movement picker plays the move (including a true FOV-compensated dolly zoom) before you spend a GPU-second. Image mode re-shoots a still; Video mode re-shoots it and then animates the move with LTX-2 (15 moves, 7 driven by official LTX camera-control LoRAs). |
+| **Angles** (`/angles`) | Upload a photo, then hold and drag the globe (or use the **Rotation / Tilt / Zoom** sliders: 8 × 4 × 3 = 96 poses) and Generate. **Generate from 12 best angles** shoots a full coverage set in one click. |
+| **Dry run** | No GPU? Generate compiles the *exact* ComfyUI workflow for that shot so you can download it and run it in ComfyUI yourself. Nothing is hidden. |
+
+Higgsfield's look and flow (fonts, palette, layout) are matched. The name, logo and copy are our own, and no Higgsfield code or assets are used.
 
 ## How it works
 

@@ -3,12 +3,7 @@ import { Comfy, ComfyError, Workflow } from "@comfyorg/sdk";
 import { getManifest, loadGraph, type Stage } from "./manifest";
 import type { AnglePlan, MovePlan } from "./shot";
 
-/**
- * cloud  — COMFY_API_KEY set: Comfy Cloud, or a serverless deployment when COMFY_BASE_URL is also set
- * local  — only COMFY_BASE_URL set: self-hosted ComfyUI behind comfy-api-proxy (no key)
- * dryrun — neither: compile the exact workflow and hand it back instead of running it
- */
-export type EngineMode = "cloud" | "local" | "dryrun";
+import type { EngineMode } from "./config";
 
 export function engineMode(): EngineMode {
   if (process.env.COMFY_API_KEY?.trim()) return "cloud";

@@ -1,5 +1,6 @@
 "use client";
 
+import { Download, FileJson, RotateCcw, X } from "lucide-react";
 import type { Take } from "@/lib/useTakes";
 
 function download(name: string, data: unknown) {
@@ -9,113 +10,121 @@ function download(name: string, data: unknown) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-const STATUS: Record<Take["status"], { label: string; cls: string }> = {
-  queued: { label: "Queued", cls: "text-amber" },
-  running: { label: "Rolling", cls: "text-tally" },
-  done: { label: "Print", cls: "text-ok" },
-  failed: { label: "NG", cls: "text-tally" },
-  dryrun: { label: "Dry run", cls: "text-amber" },
-  canceled: { label: "Cut", cls: "text-dim" },
+const STATUS: Record<Take["status"], string> = {
+  queued: "In queue",
+  running: "Generating",
+  done: "",
+  failed: "Failed",
+  dryrun: "Dry run",
+  canceled: "Canceled",
 };
 
-export function TakeCard({ take, n, onCancel, onRemove, onReuse }: { take: Take; n: number; onCancel: () => void; onRemove: () => void; onReuse: () => void }) {
-  const s = STATUS[take.status];
+function IconButton({ label, onClick, href, children }: { label: string; onClick?: () => void; href?: string; children: React.ReactNode }) {
+  const cls = "grid h-8 w-8 place-items-center rounded-[8px] bg-black/60 text-white backdrop-blur hover:bg-black/80";
+  return href ? (
+    <a href={href} download aria-label={label} title={label} className={cls}>
+      {children}
+    </a>
+  ) : (
+    <button type="button" onClick={onClick} aria-label={label} title={label} className={cls}>
+      {children}
+    </button>
+  );
+}
+
+export function TakeCard({
+  take,
+  aspect,
+  onCancel,
+  onRemove,
+  onReuse,
+}: {
+  take: Take;
+  aspect: number;
+  onCancel: () => void;
+  onRemove: () => void;
+  onReuse: () => void;
+}) {
   const busy = take.status === "queued" || take.status === "running";
-  const stages: Take["stage"][] = take.kind === "shot" ? ["angle", "move"] : ["angle"];
+  const stages = take.kind === "shot" ? 2 : 1;
+  const stageIdx = take.stage === "move" ? 1 : 0;
+  const pct = Math.round(((stageIdx + (take.progress ?? 0)) / stages) * 100);
 
   return (
-    <article className="rise flex flex-col overflow-hidden rounded-[3px] border border-line bg-panel">
-      <header className="flex items-center justify-between gap-2 border-b border-line px-3 py-2">
-        <div className="min-w-0">
-          <div className="font-display text-lg leading-none tracking-wide">TAKE {String(n).padStart(2, "0")}</div>
-          <div className="label mt-1 truncate">{take.label}</div>
+    <article className="pop group relative overflow-hidden rounded-[16px] bg-panel" style={{ aspectRatio: aspect }}>
+      {take.video ? (
+        <video src={take.video} poster={take.still} className="h-full w-full object-cover" controls loop autoPlay muted playsInline />
+      ) : take.still ? (
+        // eslint-disable-next-line @next/next/no-img-element -- job outputs are signed/streamed URLs, not static assets
+        <img src={take.still} alt={take.label} className="h-full w-full object-cover" />
+      ) : take.status === "dryrun" ? (
+        <div className="flex h-full flex-col justify-center gap-2 overflow-hidden p-4">
+          <span className="caption">No GPU attached. Here is the exact ComfyUI workflow.</span>
+          {take.dry?.prompts.map((p, i) => (
+            <p key={i} className="line-clamp-3 font-mono text-[11px] leading-relaxed text-text/80">
+              <span className="text-lime">{i === 0 ? "angle › " : "move › "}</span>
+              {p}
+            </p>
+          ))}
+          <div className="mt-1 flex flex-wrap gap-1.5">
+            {take.dry?.angle != null && (
+              <button type="button" onClick={() => download("angle.api.json", take.dry!.angle)} className="flex h-8 items-center gap-1.5 rounded-[8px] bg-fill px-2.5 text-[12px] hover:bg-fill-2">
+                <FileJson size={13} /> Angle workflow
+              </button>
+            )}
+            {take.dry?.move != null && (
+              <button type="button" onClick={() => download("move.api.json", take.dry!.move)} className="flex h-8 items-center gap-1.5 rounded-[8px] bg-fill px-2.5 text-[12px] hover:bg-fill-2">
+                <FileJson size={13} /> Move workflow
+              </button>
+            )}
+          </div>
         </div>
-        <span className={`readout flex items-center gap-1.5 text-[11px] uppercase ${s.cls}`}>
-          {take.status === "running" && <span className="rec-blink inline-block h-1.5 w-1.5 rounded-full bg-tally" />}
-          {s.label}
-        </span>
-      </header>
-
-      <div className="relative aspect-video bg-black">
-        {take.video ? (
-          <video src={take.video} poster={take.still} className="h-full w-full object-contain" controls loop autoPlay muted playsInline />
-        ) : take.still ? (
-          // eslint-disable-next-line @next/next/no-img-element -- job outputs are signed/streamed URLs, not static assets
-          <img src={take.still} alt={`Take ${n}, new angle`} className="h-full w-full object-contain" />
-        ) : take.status === "dryrun" ? (
-          <div className="flex h-full flex-col justify-center gap-2 p-4">
-            <p className="label text-amber">No engine connected</p>
-            {take.dry?.prompts.map((p, i) => (
-              <p key={i} className="readout line-clamp-3 text-[11.5px] leading-relaxed text-text/85">
-                <span className="text-dim">{i === 0 ? "ANGLE ▸ " : "MOVE ▸ "}</span>
-                {p}
-              </p>
-            ))}
-          </div>
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <span className="readout text-xs text-dim">{take.error ? "" : (take.message ?? "…")}</span>
-          </div>
-        )}
-        {take.error && <p className="absolute inset-x-0 bottom-0 bg-black/80 p-3 text-xs text-tally">{take.error}</p>}
-      </div>
+      ) : (
+        <div className={`h-full w-full ${busy ? "shimmer" : ""}`} />
+      )}
 
       {busy && (
-        <div className="flex gap-1 px-3 pt-3">
-          {stages.map((st) => {
-            const idx = stages.indexOf(st);
-            const cur = stages.indexOf(take.stage);
-            const pct = idx < cur ? 100 : idx === cur ? Math.round(take.progress * 100) : 0;
-            return (
-              <div key={st} className="flex-1">
-                <div className="label mb-1 flex justify-between">
-                  <span>{st}</span>
-                  <span className="readout">{pct}%</span>
-                </div>
-                <div className="h-1 bg-line">
-                  <div className="h-full bg-amber transition-[width] duration-500" style={{ width: `${pct}%` }} />
-                </div>
-              </div>
-            );
-          })}
+        <div className="absolute inset-x-0 bottom-0 p-3">
+          <div className="mb-1.5 flex items-center justify-between text-[12px]">
+            <span className="text-text/90">{take.message ?? STATUS[take.status]}</span>
+            <span className="font-mono text-muted">{pct}%</span>
+          </div>
+          <div className="h-1 overflow-hidden rounded-full bg-white/10">
+            <div className="h-full rounded-full bg-lime transition-[width] duration-500" style={{ width: `${Math.max(pct, 3)}%` }} />
+          </div>
         </div>
       )}
-      {busy && take.message && <p className="readout px-3 pt-2 text-[11px] text-dim">{take.message}</p>}
 
-      <footer className="mt-auto flex flex-wrap gap-2 p-3">
-        {take.dry?.angle != null && (
-          <button className="btn" onClick={() => download(`angle-take${n}.api.json`, take.dry!.angle)}>
-            Angle workflow ↓
-          </button>
-        )}
-        {take.dry?.move != null && (
-          <button className="btn" onClick={() => download(`move-take${n}.api.json`, take.dry!.move)}>
-            Move workflow ↓
-          </button>
-        )}
+      {take.error && <p className="absolute inset-x-0 bottom-0 bg-black/80 p-3 text-[12px] text-danger">{take.error}</p>}
+
+      {STATUS[take.status] && !busy && (
+        <span className="absolute left-2 top-2 rounded-[6px] bg-black/60 px-1.5 py-0.5 font-mono text-[10px] text-white/85 backdrop-blur">{STATUS[take.status]}</span>
+      )}
+
+      <div className="absolute right-2 top-2 flex gap-1 opacity-100 transition-opacity md:opacity-0 md:group-focus-within:opacity-100 md:group-hover:opacity-100">
         {take.video && (
-          <a className="btn" href={take.video} download={`take${n}.mp4`}>
-            Video ↓
-          </a>
+          <IconButton label="Download video" href={take.video}>
+            <Download size={15} />
+          </IconButton>
         )}
         {take.still && !take.video && (
-          <a className="btn" href={take.still} download={`take${n}.png`}>
-            Still ↓
-          </a>
+          <IconButton label="Download image" href={take.still}>
+            <Download size={15} />
+          </IconButton>
         )}
-        <button className="btn" onClick={onReuse}>
-          Reuse setup
-        </button>
-        {busy ? (
-          <button className="btn ml-auto text-tally" onClick={onCancel}>
-            Cut
-          </button>
-        ) : (
-          <button className="btn ml-auto" onClick={onRemove} aria-label={`Remove take ${n}`}>
-            ✕
-          </button>
-        )}
-      </footer>
+        <IconButton label="Reuse these settings" onClick={onReuse}>
+          <RotateCcw size={15} />
+        </IconButton>
+        <IconButton label={busy ? "Cancel" : "Remove"} onClick={busy ? onCancel : onRemove}>
+          <X size={15} />
+        </IconButton>
+      </div>
+
+      {!busy && !take.error && (
+        <p className="pointer-events-none absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-black/75 to-transparent px-3 pb-2.5 pt-6 text-[12px] text-white/85 opacity-0 transition-opacity group-hover:opacity-100">
+          {take.label}
+        </p>
+      )}
     </article>
   );
 }
